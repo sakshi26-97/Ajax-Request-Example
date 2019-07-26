@@ -66,54 +66,47 @@
                       
                         
                         // FETCH THE MAX VALUE FROM MOST ACTIVE ATTACKER
-                        var value_att=Math.max(...mostActiveAttacker);
-                        var most_attacker= getKeyByValue(attacker, value_att);   
-                        resObj.most_active.attacker_king=most_attacker;
+                        var value_att = Math.max(...mostActiveAttacker);
+                        var most_attacker = getKeyByValue(attacker, value_att);   
+                        resObj.most_active.attacker_king = most_attacker;
                         
                         // FETCH THE MAX VALUE FROM MOST ACTIVE DEFENDER
-                        var value_def=Math.max(...mostActiveDefender);
-                        var most_defender= getKeyByValue(defender, value_def);   
-                        resObj.most_active.defender_king=most_defender;
+                        var value_def = Math.max(...mostActiveDefender);
+                        var most_defender = getKeyByValue(defender, value_def);   
+                        resObj.most_active.defender_king = most_defender;
                         
                         // FETCH THE MAX VALUE FROM MOST ACTIVE REGION
-                        var value_reg=Math.max(...mostActiveRegion);
-                        var most_region= getKeyByValue(region, value_reg);   
-                        resObj.most_active.region=most_region;
+                        var value_reg = Math.max(...mostActiveRegion);
+                        var most_region = getKeyByValue(region, value_reg);   
+                        resObj.most_active.region = most_region;
 
                         // FETCH THE MAX VALUE FROM MOST ACTIVE BATTLE_NAME
-                        var value_name=Math.max(...mostActiveBattleName);
-                        var most_name1= getKeyByValue(name, value_name);   
-                        resObj.most_active.name=most_name1;
-
-
+                        var value_name = Math.max(...mostActiveBattleName);
+                        var most_name1 = getKeyByValue(name, value_name);   
+                        resObj.most_active.name = most_name1;
 
                         // ATTACKER OUTCOME
                         if(response[i].attacker_outcome.length>1){
-                            if(response[i].attacker_outcome=='win'){
+                            if(response[i].attacker_outcome == 'win'){
                                 countwin++;
                             }
                         else{
-                            countloss++;
+                                countloss++;
                             }
                         }
-                        resObj.attacker_outcome.win=countwin;
-                        resObj.attacker_outcome.loss=countloss;
-                            
+                        resObj.attacker_outcome.win = countwin;
+                        resObj.attacker_outcome.loss = countloss;
 
                         // UNIQUE BATTLE TYPE
                         if (!battleType.includes(response[i].battle_type)) {
                             battleType.push(response[i].battle_type)
                         }
-                        
                         resObj.battle_type = battleType.filter(Boolean);
                         
-
-
                         // DEFENDER_SIZE
                         if(response[i].defender_size){
                             def_size.push(response[i].defender_size);
                         }
-                
                     }
 
                     console.log('Battle Types',battleType);
@@ -146,8 +139,6 @@
             });
         }
 
-
-
         function mostActive(response,i,field,obj,most){
             if (response[i][field]) {
                 if (obj.hasOwnProperty(response[i][field])) {
@@ -158,7 +149,6 @@
                 }
             }
 
-            t = obj[response[i][field]]
             most.push(obj[response[i][field]] ? obj[response[i][field]] : 0) ; 
         }
 
