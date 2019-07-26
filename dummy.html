@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>
+            Battle JSON
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    </head>
+    <body>
+        <div id="simple"></div>
+        <div id="info"></div>
+        <script> 
+            let resObj = {
+            'most_active':{
+            'attacker_king': '',
+            'defender_king': '',
+            'region':''
+            },
+            'attacker_outcome':{
+            'win':'', // total win
+            'loss':'' // total loss
+            },
+            'battle_type':[], // unique battle types
+            'defender_size':{
+            'average':'',
+            'min':'',
+            'max':''
+            }
+            };
+
+            function ajaxCall(){
+                $.ajax({
+                    url: "battles.json",
+                    type: "GET",
+                    success: function(response){
+                        console.log('Fetching Data',response);
+                        var contain = document.getElementById("info");
+                        var emptydata="";
+                        var attacker = {},
+                            defender = {},
+                            region = {},
+                            name = {},
+                            battleTypes = [],
+                            mostAttacker = [],
+                            mostDefender = [],
+                            mostRegion = [],
+                            mostName = [],
+                            countWin=0,
+                            countLoss=0,
+                            defSize = [];
+
+            
+                    for(i=0; i<response.length; i++) {
+                        
+
+                    }
+
+
+
+                        }
+                })
+            }
+            
+
+
+ajaxcall();
+                    
+</script>
+</body>
+</html>

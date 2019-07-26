@@ -1,34 +1,35 @@
 <html>
     <head>
         <title>
-            Battle JSON
+
         </title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
         <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
     </head>
     <body>
         <div id="simple"></div>
         <div id="info"></div>
         <script> 
             let resObj = {
-            'most_active':{
-            'attacker_king': '',
-            'defender_king': '',
-            'region':''
-            },
-            'attacker_outcome':{
-            'win':'', // total win
-            'loss':'' // total loss
-            },
-            'battle_type':[], // unique battle types
-            'defender_size':{
-            'average':'',
-            'min':'',
-            'max':''
-            }
+                'most_active':{
+                'attacker_king': '',
+                'defender_king': '',
+                'region':''
+                },
+                'attacker_outcome':{
+                'win':'', // total win
+                'loss':'' // total loss
+                },
+                'battle_type':[], // unique battle types
+                'defender_size':{
+                'average':'',
+                'min':'',
+                'max':''
+                }
             }
             
-        function ajaxcall(){
+        function ajaxCall(){
             $.ajax({
                 url: "battles.json",
                 type: "GET",
@@ -36,87 +37,52 @@
                     console.log('Fetching Data',response);
                     var contain = document.getElementById("info");
                     var emptydata="";
-                    let obj_att = {},
-                        obj_def = {},
-                        obj_reg = {},
-                        obj_name = {},
-                        arra = [],
-                        most_att = [],
-                        most_def = [],
-                        most_reg = [],
-                        most_name = [],
-                        countwin=0,
+                    let attacker = {}, 
+                        defender = {}, 
+                        region = {},
+                        name = {},
+                        battleType = [],
+                        mostActiveAttacker = [], 
+                        mostActiveDefender = [], 
+                        mostActiveRegion = [], 
+                        mostActiveBattleName = [],
+                        countwin=0, 
                         countloss=0,
                         def_size = [];
+
                     for(var i=0; i<response.length;i++)
                     {
                         // MOST ACTIVE ATTACKER KING
-                    
-                        if (response[i].attacker_king) {
-                            if (obj_att.hasOwnProperty(response[i].attacker_king)) {
-                                obj_att[response[i].attacker_king]++;
-                            } 
-                            else {
-                                obj_att[response[i].attacker_king] = 1;   
-                            }
-                        }
-                        most_att.push(obj_att[response[i].attacker_king]);
-
+                        mostActive(response,i,'attacker_king',attacker,mostActiveAttacker);
+                        
                         // MOST ACTIVE DEFENDER KING 
-
-                        if (response[i].defender_king) {
-                            if (obj_def.hasOwnProperty(response[i].defender_king)) {
-                                obj_def[response[i].defender_king]++;
-                            } 
-                            else {
-                                obj_def[response[i].defender_king] = 1;   
-                            }
-                        }
-                        most_def.push(obj_def[response[i].defender_king]);
-
+                        mostActive(response,i,'defender_king',defender,mostActiveDefender);
+                      
                         // MOST ACTIVE REGION
-
-                        if (response[i].region) {
-                            if (obj_reg.hasOwnProperty(response[i].region)) {
-                                obj_reg[response[i].region]++;
-                            } 
-                            else {
-                                obj_reg[response[i].region] = 1;   
-                            }
-                        }
-                        most_reg.push(obj_reg[response[i].region]);
+                        mostActive(response,i,'region',region,mostActiveRegion);
 
                         // MOST ACTIVE NAME
-
-                        if (response[i].name) {
-                            if (obj_name.hasOwnProperty(response[i].name)) {
-                                obj_name[response[i].name]++;
-                            } 
-                            else {
-                                obj_name[response[i].name] = 1;   
-                            }
-                        }
-                        most_name.push(obj_name[response[i].name]);
-
-                        parseUn(most_att);
-                        parseUn(most_def);
-                        parseUn(most_reg);
-                        parseUn(most_name);
+                        mostActive(response,i,'name',name,mostActiveBattleName);
+                      
                         
-                        var value_att=Math.max(...most_att);
-                        var most_attacker= getKeyByValue(obj_att, value_att);   
+                        // FETCH THE MAX VALUE FROM MOST ACTIVE ATTACKER
+                        var value_att=Math.max(...mostActiveAttacker);
+                        var most_attacker= getKeyByValue(attacker, value_att);   
                         resObj.most_active.attacker_king=most_attacker;
                         
-                        var value_def=Math.max(...most_def);
-                        var most_defender= getKeyByValue(obj_def, value_def);   
+                        // FETCH THE MAX VALUE FROM MOST ACTIVE DEFENDER
+                        var value_def=Math.max(...mostActiveDefender);
+                        var most_defender= getKeyByValue(defender, value_def);   
                         resObj.most_active.defender_king=most_defender;
                         
-                        var value_reg=Math.max(...most_reg);
-                        var most_region= getKeyByValue(obj_reg, value_reg);   
+                        // FETCH THE MAX VALUE FROM MOST ACTIVE REGION
+                        var value_reg=Math.max(...mostActiveRegion);
+                        var most_region= getKeyByValue(region, value_reg);   
                         resObj.most_active.region=most_region;
 
-                        var value_name=Math.max(...most_name);
-                        var most_name1= getKeyByValue(obj_name, value_name);   
+                        // FETCH THE MAX VALUE FROM MOST ACTIVE BATTLE_NAME
+                        var value_name=Math.max(...mostActiveBattleName);
+                        var most_name1= getKeyByValue(name, value_name);   
                         resObj.most_active.name=most_name1;
 
 
@@ -134,13 +100,12 @@
                         resObj.attacker_outcome.loss=countloss;
                             
 
-
-
-                        // Unique Battle type
-                        if (!arra.includes(response[i].battle_type)) {
-                            arra.push(response[i].battle_type)
+                        // UNIQUE BATTLE TYPE
+                        if (!battleType.includes(response[i].battle_type)) {
+                            battleType.push(response[i].battle_type)
                         }
-                        resObj.battle_type = arra;
+                        
+                        resObj.battle_type = battleType.filter(Boolean);
                         
 
 
@@ -149,48 +114,60 @@
                             def_size.push(response[i].defender_size);
                         }
                 
-                }
+                    }
 
-                    console.log('Battle Types',arra);
+                    console.log('Battle Types',battleType);
                     console.log('Defender_size',def_size);  
                     console.log('Max defender size',Math.max(...def_size));
                     console.log('Min defender size',Math.min(...def_size));
                     
+                    // AVERAGE
                     var sum = 0;
                     for( var i = 0; i < def_size.length; i++ ){
-                        sum += parseInt( def_size[i], 10 ); //don't forget to add the base  
+                        sum += parseInt( def_size[i], 10 );   
                     }
 
                     var avg = sum/def_size.length;
                     console.log('Average defender size',avg); 
-                    resObj.defender_size.max=Math.max(...def_size);
-                    resObj.defender_size.min=Math.min(...def_size);
-                    resObj.defender_size.average=avg;
+
+                    resObj.defender_size.max = Math.max(...def_size);
+                    resObj.defender_size.min = Math.min(...def_size);
+                    resObj.defender_size.average = avg;
+
                     console.log('Total wins',countwin);
-                    console.log('Total loss',countloss);            
+                    console.log('Total loss',countloss);     
+
                     contain.insertAdjacentHTML('beforeend',emptydata);
                     console.log('Final Object',resObj);
+
                     contain.insertAdjacentHTML('beforeend',emptydata);
                     $('#simple').html(resObj);
                 }
-                });
-            }
+            });
+        }
 
 
-    function getKeyByValue(object, value) {
-                return Object.keys(object).find(key => object[key] === value);
-            }
 
-    function parseUn(arr){
-            for(i=0;i<arr.length;i++){
-                if(isNaN(arr[i])){
-                            arr[i]=0;
+        function mostActive(response,i,field,obj,most){
+            if (response[i][field]) {
+                if (obj.hasOwnProperty(response[i][field])) {
+                    obj[response[i][field]]++;
+                } 
+                else {
+                    obj[response[i][field]] = 1;   
                 }
-            }    
-    }
+            }
 
-ajaxcall();
-                    
+            t = obj[response[i][field]]
+            most.push(obj[response[i][field]] ? obj[response[i][field]] : 0) ; 
+        }
+
+        function getKeyByValue(object, value) {
+            return Object.keys(object).find(key => object[key] === value);
+        }
+
+ajaxCall();
+
 </script>
 </body>
 </html>
