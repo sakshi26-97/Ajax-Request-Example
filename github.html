@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub Repository search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+</head>
+<body>
+<h1>Repository name:</h1>
+<input type="text" id="reponame"/>
+<button onclick="display()" id="search">Search</button>
+
+<script>
+    function display(){
+
+        async function loadRepos() {
+
+            // Fetch Git Gepository using Git Gearch API 
+            let searchName =  $("#reponame").val();
+            $("#repos").empty();
+            let githubUrl = await fetch("https://api.github.com/search/repositories?q="+searchName);
+            console.log(githubUrl);
+            let data = await githubUrl.json();
+            var output = [];
+            var resultObj = {
+                
+                "name": "",
+                "full_name": "",
+                "private": false,
+                "owner":{
+                        'login':'',
+                        'name': '',
+                        'followersCount':'',
+                        'followingCount':''
+                    },
+                'licenseName':'',
+                'score':'',
+                'numberOfBranch':''
+                };
+
+            for(i=0;i<10;i++){
+                let ownerResult = await fetch(data.items[i].owner.url);
+                let ownerData = await ownerResult.json();
+                let branchesUrl = data.items[i].branches_url;
+                let abc = branchesUrl.substring(0,branchesUrl.length-9);
+                let branchResult = await fetch(abc);
+                let branchData = await branchResult.json();                   
+                var license = data.items[i].license;
+            
+            // pushing json object into an array
+                output.push({
+                name : data.items[i].name,
+                full_name : data.items[i].full_name,
+                private : data.items[i].private,
+                owner: {
+                    "login" : data.items[i].owner.login,
+                    "name": ownerData.name,
+                    "followersCount":  ownerData.followers,
+                    "followingCount": ownerData.following
+                },
+                licenseName : license ?  data.items[i].license.name : "",
+                score : data.items[i].score,
+                numberOfBranch : branchData.length
+                }); 
+            }
+
+            // prints top 10 git search repository
+            console.log(output);
+        }
+
+        loadRepos().then(data =>console.log(data)).catch(reason => console.log(reason.message))
+    }
+</script>
+</body>
+</html>
+
+
